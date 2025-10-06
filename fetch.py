@@ -1,4 +1,5 @@
 from playwright.sync_api import sync_playwright
+from bs4 import BeautifulSoup
 from config import URL
 
 def get_html(url):
@@ -10,5 +11,21 @@ def get_html(url):
         html = page.content()
         browser.close()
         return html
+    
 
-print(get_html(URL))
+def get_img(html):
+    images = []
+    soup = BeautifulSoup(html, 'lxml')
+    hero_div = soup.find('div', class_='hero-background')
+
+    
+
+    img_tag = soup.find_all('img')
+    for img in img_tag: 
+        images.append(img.get('src'))
+
+    return images
+
+
+# print(get_html(URL))
+# print(get_img(get_html(URL)))
