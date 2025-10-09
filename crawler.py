@@ -39,7 +39,6 @@ def check_status(url):
         print(html)
         browser.close()
 
+check_status(BASE)
 
-# check_status(BASE)
-
-print(get_links(BASE, 1, 3))
+# print(get_links(BASE, 1, 3))
