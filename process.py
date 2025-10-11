@@ -45,10 +45,9 @@ def to_markdown(html):
     else:
         return body
     
-def write_img():
-    images = get_img(URL)
+def write_img(images):
     for img in images:
         data = requests.get(img).content
 
 
-print(to_markdown(get_html(URL)))
+# print(to_markdown(get_html(URL)))

@@ -23,9 +23,11 @@ def get_links(base, start_page=1, end_page=2):
                     LINKS.append(href)
                     noticias_counter += 1
             print(f"Se encontraron {noticias_counter} noticias en la página {i}")
+            time.sleep(0.5)
         
         browser.close()  
-    return f"Total de noticias encontradas: \n{LINKS}"
+    print(f"Total de noticias encontradas: \n{LINKS}")
+    return LINKS
 
 
 def check_status(url):
@@ -39,6 +41,6 @@ def check_status(url):
         print(html)
         browser.close()
 
-check_status(BASE)
+# check_status(BASE)
 
 # print(get_links(BASE, 1, 3))
