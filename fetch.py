@@ -1,7 +1,9 @@
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 import re
-from config import URL
+from config import URL, BASE_URL
+from urllib.parse import urljoin
+
 
 def get_html(url):
     with sync_playwright() as p:
@@ -22,11 +24,15 @@ def get_img(html):
         hero_str = str(hero)
         match = re.search(r'url\((.*?)\)', hero_str)
         if match:
-            images.append(match.group(1).strip("'\""))
+            img_url = match.group(1).strip("'\"")
+            images.append(urljoin(BASE_URL, img_url))
 
     img_tag = soup.find_all('img')
     for img in img_tag:
-        images.append(img.get('src'))
+        src = img.get('src')
+        if src:
+            images.append(urljoin(BASE_URL, src))
+
 
     return images
 

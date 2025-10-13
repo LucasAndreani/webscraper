@@ -1,6 +1,7 @@
 from fetch import get_html, get_img
 from bs4 import BeautifulSoup
-from config import URL
+from config import URL, BASE_URL
+from urllib.parse import urljoin
 import re
 import requests
 import os
@@ -29,7 +30,7 @@ def to_markdown(html):
     content = soup.find("section", class_="container module-content")
     hero = soup.find("div", class_="hero-background")
     if not content:
-        return ""
+        raise Exception('Contenido no encontrado')
 
     hero_url = ""
     if hero:
@@ -37,14 +38,23 @@ def to_markdown(html):
         match = re.search(r'url\((.*?)\)', hero_str)
         if match:
             hero_url = match.group(1).strip("'\"")
+    if not hero_url:
+        raise Exception("Imagen hero no encontrada")
 
     converter = MantenerEmbedsConverter()
     body = converter.convert(str(content)).strip()
 
-    if hero_url:
-        return f"![]({hero_url})\n\n{body}"
-    else:
-        return body
+    
+    markdown_convertido = f"![]({hero_url})\n\n{body}"
+
+    matches = re.findall(r'\((/[^)]+)\)', markdown_convertido)
+    for match in matches:
+        full_url = urljoin(BASE_URL, match)  
+        markdown_convertido = markdown_convertido.replace(match, full_url)
+    
+    return markdown_convertido
+    
+    
     
 def write_img(images, URL):
     os.makedirs("images/noticias", exist_ok=True)

@@ -5,19 +5,19 @@ from config import BASE, URL
 
 
 def main():
-    # links = get_links(BASE, 1, 36)
-    # for link in links:
-    #     html = get_html(link)
-    #     images = get_img(html)
-    #     write_img(images, link)
-    #     markdown_converted = to_markdown(html)
-    #     write_md(markdown_converted, link)
+    links = get_links(BASE, 1, 2)
+    for link in links:
+        html = get_html(link)
+        images = get_img(html)
+        write_img(images, link)
+        markdown_converted = to_markdown(html)
+        write_md(markdown_converted, link)
     
-    html = get_html(URL)
-    images = get_img(html)
-    write_img(images, URL)
-    markdown_converted = to_markdown(html)  
-    write_md(markdown_converted, URL)
+    # html = get_html(URL)
+    # images = get_img(html)
+    # write_img(images, URL)
+    # markdown_converted = to_markdown(html)  
+    # write_md(markdown_converted, URL)
 
         
 
