@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from config import URL
 import re
 import requests
+import os
 from markdownify import MarkdownConverter, markdownify as md
 
 class MantenerEmbedsConverter(MarkdownConverter):
@@ -45,9 +46,38 @@ def to_markdown(html):
     else:
         return body
     
-def write_img(images):
-    for img in images:
-        data = requests.get(img).content
+def write_img(images, URL):
+    os.makedirs("images/noticias", exist_ok=True)
+    nombre_base = os.path.basename(URL.rstrip("/"))
+
+    for i, img in enumerate(images, start=1):
+        try:
+            response = requests.get(img, timeout=10)
+            if response.status_code == 200:
+                ext = os.path.splitext(img)[1] or ".jpg"
+                if len(images) == 1:
+                    file = f"{nombre_base}{ext}"
+                else:
+                    file = f"{nombre_base}_{i}{ext}"
+
+                path = os.path.join("images/noticias", file)
+                with open(path, "wb") as f:
+                    f.write(response.content)
+            else:
+                print(f"Error descargando: {img}")
+        except Exception as e:
+            print(f"Error descargando {img}: {e}")
+
+
+
+def write_md(markdown, URL):
+    os.makedirs("md/noticias", exist_ok=True)
+    file = os.path.basename(URL.rstrip("/")) + ".md"
+    path = os.path.join("md/noticias", file)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(markdown)
+    print(f"Escrita: {file}")
+
 
 
 # print(to_markdown(get_html(URL)))
