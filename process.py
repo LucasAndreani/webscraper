@@ -11,7 +11,10 @@ class MantenerEmbedsConverter(MarkdownConverter):
     def convert_div(self, el, text, convert_as_inline=False, **kwargs):
         if el.find(["iframe", "blockquote", "script"]):
             return str(el)
-        return super().convert_div(el, text, convert_as_inline=convert_as_inline, **kwargs)
+        try:
+            return super().convert_div(el, text, convert_as_inline=convert_as_inline, **kwargs)
+        except TypeError:
+            return super().convert_div(el, text, **kwargs)
 
     def convert_iframe(self, el, text, convert_as_inline=False, **kwargs):
         return str(el)
@@ -24,6 +27,16 @@ class MantenerEmbedsConverter(MarkdownConverter):
         if "instagram" in src:
             return str(el)
         return "" 
+    
+    def convert_p(self, el, text, convert_as_inline=False, **kwargs):
+        a_tag = el.find("a", href=True)
+        if a_tag and "youtube.com" in a_tag["href"]:
+            return str(el)
+        try:
+            return super().convert_p(el, text, convert_as_inline=convert_as_inline, **kwargs)
+        except TypeError:
+            return super().convert_p(el, text, **kwargs)
+
 
 def to_markdown(html):
     soup = BeautifulSoup(html, "lxml")

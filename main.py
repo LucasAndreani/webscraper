@@ -5,7 +5,7 @@ from config import BASE, URL
 
 
 def main():
-    links = get_links(BASE, 1, 2)
+    links = get_links(BASE, 13, 15) 
     for link in links:
         html = get_html(link)
         images = get_img(html)
