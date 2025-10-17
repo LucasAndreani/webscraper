@@ -1,6 +1,9 @@
 venv/
 images/
 md/
+json/
+log.txt
+tests.py
 
 __pycache__/
 *.pyc
