@@ -137,6 +137,7 @@ def rewrite_image(markdown, replacements):
         markdown = markdown.replace(old_url, new_url)
     return markdown
 
+
 def remove_etiquetas(markdown):
     lines = markdown.splitlines()
     new_lines = []
@@ -145,6 +146,12 @@ def remove_etiquetas(markdown):
             break
         new_lines.append(line)
     return "\n".join(new_lines)
+
+
+def write_titles(data):
+    os.makedirs("titles_json/noticias", exist_ok=True)
+    with open("titles_json/noticias/noticias_titles.json", "w", encoding="utf-8") as j:
+        json.dump(data, j, ensure_ascii=False, indent=2)
 
 
 

@@ -2,7 +2,10 @@ venv/
 images/
 md/
 json/
+titles_json/
+
 log.txt
+titles_log.txt
 tests.py
 
 __pycache__/
