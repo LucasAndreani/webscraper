@@ -4,6 +4,7 @@ md/
 json/
 titles_json/
 
+eventos_log.txt
 log.txt
 titles_log.txt
 tests.py

@@ -1,6 +1,5 @@
 from playwright.sync_api import sync_playwright
 import time
-from config import BASE
 from fetch import get_html
 from bs4 import BeautifulSoup
 
@@ -44,16 +43,23 @@ def get_paginated_html(base, start_page=1, end_page=2):
         soup = BeautifulSoup(html, 'lxml')
 
         for li in soup.select("li.snippet.boxed"):
+            a_tag = li.select_one("a[href]")
             title = li.select_one("h2")
             subtitle = li.select_one("p.subtitle")
             desc_p = li.select_one("article.text p:not(.subtitle)")
+
+            url_end = ""
+            if a_tag:
+                href = a_tag.get("href", "")
+                url_end = href.rstrip("/").split("/")[-1]
         
             data.append({
+                "url": url_end,
                 "title": title.get_text(strip=True) if title else "",
                 "subtitle": subtitle.get_text(strip=True) if subtitle else "",
                 "description": desc_p.get_text(strip=True) if desc_p else ""
             })
-            
+
         time.sleep(0.1)
 
     return data

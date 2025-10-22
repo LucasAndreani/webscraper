@@ -19,22 +19,30 @@ def get_html(url):
 def get_img(html):
     images = []
     soup = BeautifulSoup(html, 'lxml')
+
     hero = soup.find("div", class_="hero-background")
     if hero:
-        hero_str = str(hero)
-        match = re.search(r'url\((.*?)\)', hero_str)
+        style_or_data = hero.get("data-backgroundimage") or hero.get("style", "")
+        match = re.search(r'url\((.*?)\)', style_or_data)
         if match:
             img_url = match.group(1).strip("'\"")
-            images.append(urljoin(BASE_URL, img_url))
+            if not img_url.endswith("lazy.svg"):  # skip placeholders
+                images.append(urljoin(BASE_URL, img_url))
 
-    img_tag = soup.find_all('img')
-    for img in img_tag:
-        src = img.get('src')
-        if src:
+    img_tags = soup.find_all("img")
+    for img in img_tags:
+        src = img.get("src")
+        if src and not src.endswith("lazy.svg"):
             images.append(urljoin(BASE_URL, src))
 
+    figures = soup.find_all("figure", class_="image progressive replace")
+    for fig in figures:
+        data_href = fig.get("data-href")
+        if data_href:
+            images.append(urljoin(BASE_URL, data_href))
 
-    return images
+    return list(dict.fromkeys(images))
+
 
 
 # print(get_html(URL))
