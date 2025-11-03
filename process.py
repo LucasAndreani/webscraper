@@ -195,16 +195,15 @@ def get_titles_time_data(html):
     if aside:
         text = aside.get_text(" ", strip=True)
 
-        dia_match = re.search(r"Día:\s*(.*?)\s*(?:Horario:|$)", text)
-        hora_match = re.search(r"Horario:\s*(.*?)\s*(?:Lugar:|$)", text)
-        lugar_match = re.search(r"Lugar:\s*(.*)", text)
+        dia_match = re.search(r"Dí?a?s?:\s*(.*?)\s*(?:Horario:|$)", text, re.IGNORECASE)
+        hora_match = re.search(r"Horario:\s*(.*?)\s*(?:Lugar:|$)", text, re.IGNORECASE)
+        lugar_match = re.search(r"Lugar:\s*(.*)", text, re.IGNORECASE)
 
         data["dia"] = dia_match.group(1).strip() if dia_match else "No disponible"
         data["hora"] = hora_match.group(1).strip() if hora_match else "No disponible"
         data["lugar"] = lugar_match.group(1).strip() if lugar_match else "No disponible"
 
     return data
-
     
 
 def rewrite_image(markdown, replacements):

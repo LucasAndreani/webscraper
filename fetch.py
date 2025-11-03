@@ -26,7 +26,7 @@ def get_img(html):
         match = re.search(r'url\((.*?)\)', style_or_data)
         if match:
             img_url = match.group(1).strip("'\"")
-            if not img_url.endswith("lazy.svg"):  # skip placeholders
+            if not img_url.endswith("lazy.svg"):  
                 images.append(urljoin(BASE_URL, img_url))
 
     img_tags = soup.find_all("img")
