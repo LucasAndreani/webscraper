@@ -10,7 +10,7 @@ def get_html(url):
         browser = p.chromium.launch(headless=False)
         page = browser.new_page()
         page.goto(url, timeout=60000)
-        page.wait_for_load_state('networkidle')
+        page.wait_for_load_state('networkidle') 
         html = page.content()
         browser.close()
         return html
@@ -18,22 +18,32 @@ def get_html(url):
 
 def get_img(html):
     images = []
-    soup = BeautifulSoup(html, 'lxml')
+    soup = BeautifulSoup(html, "lxml")
 
     hero = soup.find("div", class_="hero-background")
     if hero:
         style_or_data = hero.get("data-backgroundimage") or hero.get("style", "")
-        match = re.search(r'url\((.*?)\)', style_or_data)
+        match = re.search(r"url\((.*?)\)", style_or_data)
         if match:
             img_url = match.group(1).strip("'\"")
-            if not img_url.endswith("lazy.svg"):  
+            if not img_url.endswith("lazy.svg"):
                 images.append(urljoin(BASE_URL, img_url))
 
     img_tags = soup.find_all("img")
     for img in img_tags:
-        src = img.get("src")
-        if src and not src.endswith("lazy.svg"):
-            images.append(urljoin(BASE_URL, src))
+        src = (
+            img.get("data-src")
+            or img.get("data-original")
+            or img.get("data-lazy")
+            or img.get("src")
+        )
+
+        if not src or src.endswith("lazy.svg"):
+            continue
+
+        src = re.sub(r"_lazy(\.\w+)$", r"\1", src)
+
+        images.append(urljoin(BASE_URL, src))
 
     figures = soup.find_all("figure", class_="image progressive replace")
     for fig in figures:
@@ -42,7 +52,6 @@ def get_img(html):
             images.append(urljoin(BASE_URL, data_href))
 
     return list(dict.fromkeys(images))
-
 
 
 # print(get_html(URL))
